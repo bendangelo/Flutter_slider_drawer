@@ -182,6 +182,7 @@ class SliderDrawerState extends State<SliderDrawer>
                       widget.slideDirection,
                       _animation.value,
                     ),
+                    child: child
                   );
                 },
                 child: GestureDetector(
