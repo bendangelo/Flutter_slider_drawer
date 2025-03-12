@@ -74,6 +74,9 @@ class SliderDrawer extends StatefulWidget {
   ///
   final SlideDirection slideDirection;
 
+  /// Optional callback that is called when the [Scaffold.drawer] is opened or closed.
+  final void Function(bool isOpened)? onDrawerChanged;
+
 // The color of the [Material] widget that underlies the entire Scaffold.
   ///
   /// The theme's [ThemeData.scaffoldBackgroundColor] by default.
@@ -90,7 +93,9 @@ class SliderDrawer extends StatefulWidget {
       this.slideDirection = SlideDirection.leftToRight,
       this.sliderBoxShadow,
       this.appBar,
-      this.backgroundColor})
+      this.backgroundColor,
+      this.onDrawerChanged
+      })
       : super(key: key);
 
   @override
@@ -126,7 +131,8 @@ class SliderDrawerState extends State<SliderDrawer>
       vsync: this,
       animationDuration: widget.animationDuration,
       slideDirection: widget.slideDirection,
-    );
+      onDrawerChanged: widget.onDrawerChanged
+    )
 
     _animation = Tween<double>(
       begin: widget.sliderCloseSize,
