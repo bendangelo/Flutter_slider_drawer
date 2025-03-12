@@ -174,59 +174,68 @@ class SliderDrawerState extends State<SliderDrawer>
                 sliderBoxShadow: widget.sliderBoxShadow!,
               ),
 
-            AnimatedBuilder(
-              animation: _controller.animationController,
-              builder: (context, child) => Transform.translate(
-                offset: _animationStrategy.getOffset(
-                  widget.slideDirection,
-                  _animation.value,
-                ),
-                child: child,
-              ),
-              child: GestureDetector(
-                onTap: isDrawerOpen ? closeSlider : null, // Close drawer on tap if open
-                child: AbsorbPointer(
-                  absorbing: isDrawerOpen, // Disable interactions when drawer is open
-                  child: GestureDetector(
-                    onHorizontalDragStart: widget.isDraggable ? _handleDragStart : null,
-                    onHorizontalDragEnd: widget.isDraggable ? _handleDragEnd : null,
-                    onHorizontalDragUpdate: widget.isDraggable ? (details) => _handleDragUpdate(details, constraints) : null,
-                    child: Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      color: widget.backgroundColor ?? const Color(0xFFFFFFFF),
-                      child: widget.useSafeArea
-                          ? SafeArea(
-                              child: Column(
-                                children: [
-                                  AppBar(
-                                    slideDirection: widget.slideDirection,
-                                    animationDrawerController: _controller.animationController,
-                                    appBar: widget.appBar,
-                                    onDrawerTap: _controller.toggle,
-                                  ),
-                                  Expanded(child: widget.child),
-                                ],
-                              ),
-                            )
-                          : Column(
-                              children: [
-                                AppBar(
-                                  slideDirection: widget.slideDirection,
-                                  animationDrawerController: _controller.animationController,
-                                  appBar: widget.appBar,
-                                  onDrawerTap: _controller.toggle,
-                                ),
-                                Expanded(child: widget.child),
-                              ],
-                            ),
+              AnimatedBuilder(
+                animation: _controller.animationController,
+                builder: (context, child) {
+                  // Check if the drawer is actually open or still animating
+                  bool isAnimating = _controller.animationController.status == AnimationStatus.forward ||
+                      _controller.animationController.status == AnimationStatus.reverse;
+                  bool shouldAbsorb = isDrawerOpen || isAnimating; // Absorb taps if open or animating
+
+                  return Transform.translate(
+                    offset: _animationStrategy.getOffset(
+                      widget.slideDirection,
+                      _animation.value,
                     ),
-                  ),
-                ),
-              ),
-            )
-          ],
-        );
+                    child: AbsorbPointer(
+                      absorbing: shouldAbsorb, // Disable interactions only when necessary
+                      child: child,
+                    ),
+                  );
+                },
+                child: GestureDetector(
+                         onTap: isDrawerOpen ? closeSlider : null, // Close drawer on tap if open
+                         child: GestureDetector(
+                           onHorizontalDragStart: widget.isDraggable ? _handleDragStart : null,
+                           onHorizontalDragEnd: widget.isDraggable ? _handleDragEnd : null,
+                           onHorizontalDragUpdate: widget.isDraggable
+                           ? (details) => _handleDragUpdate(details, constraints)
+                           : null,
+                           child: Container(
+                             width: double.infinity,
+                             height: double.infinity,
+                             color: widget.backgroundColor ?? const Color(0xFFFFFFFF),
+                             child: widget.useSafeArea
+                             ? SafeArea(
+                               child: Column(
+                                 children: [
+                                   AppBar(
+                                     slideDirection: widget.slideDirection,
+                                     animationDrawerController: _controller.animationController,
+                                     appBar: widget.appBar,
+                                     onDrawerTap: _controller.toggle,
+                                   ),
+                                   Expanded(child: widget.child),
+                                 ],
+                               ),
+                             )
+                             : Column(
+                               children: [
+                                 AppBar(
+                                   slideDirection: widget.slideDirection,
+                                   animationDrawerController: _controller.animationController,
+                                   appBar: widget.appBar,
+                                   onDrawerTap: _controller.toggle,
+                                 ),
+                                 Expanded(child: widget.child),
+                               ],
+                             ),
+                           ),
+                           ),
+                           ),
+                           )
+                               ],
+                               );
       },
     );
   }
@@ -243,7 +252,7 @@ class SliderDrawerState extends State<SliderDrawer>
   }
 
   void _handleDragUpdate(
-      DragUpdateDetails details, BoxConstraints constraints) {
+    DragUpdateDetails details, BoxConstraints constraints) {
     _animationStrategy.handleDragUpdate(details, constraints, _controller);
   }
 
@@ -252,4 +261,4 @@ class SliderDrawerState extends State<SliderDrawer>
     _controller.dispose();
     super.dispose();
   }
-}
+    }
