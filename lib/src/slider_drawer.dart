@@ -177,24 +177,15 @@ class SliderDrawerState extends State<SliderDrawer>
               AnimatedBuilder(
                 animation: _controller.animationController,
                 builder: (context, child) {
-                  // Check if the drawer is actually open or still animating
-                  bool isAnimating = _controller.animationController.status == AnimationStatus.forward ||
-                      _controller.animationController.status == AnimationStatus.reverse;
-                  bool shouldAbsorb = isDrawerOpen || isAnimating; // Absorb taps if open or animating
-
                   return Transform.translate(
                     offset: _animationStrategy.getOffset(
                       widget.slideDirection,
                       _animation.value,
                     ),
-                    child: AbsorbPointer(
-                      absorbing: shouldAbsorb, // Disable interactions only when necessary
-                      child: child,
-                    ),
                   );
                 },
                 child: GestureDetector(
-                         onTap: isDrawerOpen ? closeSlider : null, // Close drawer on tap if open
+                         onTap: isDrawerOpen ? _controller.toggle : null, // Close drawer on tap if open
                          child: GestureDetector(
                            onHorizontalDragStart: widget.isDraggable ? _handleDragStart : null,
                            onHorizontalDragEnd: widget.isDraggable ? _handleDragEnd : null,
