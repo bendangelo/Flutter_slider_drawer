@@ -74,33 +74,50 @@ class _LeadingIcon extends StatelessWidget {
   final AnimationController animationController;
   final VoidCallback? onTap;
 
-  const _LeadingIcon(
-      {required this.config,
-      required this.animationController,
-      required this.onTap});
+  const _LeadingIcon({
+    required this.config,
+    required this.animationController,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return config.isCupertino
-        ? _AnimatedCupertinoIcon(progress: animationController, onTap: onTap)
+        ? _AnimatedCupertinoIcon(
+            progress: animationController,
+            onTap: onTap,
+            isAnimated: config.isAnimated,
+          )
         : IconButton(
             splashColor: config.splashColor,
-            icon: AnimatedIcon(
-                icon: AnimatedIcons.menu_close,
-                color: config.drawerIconColor,
-                size: config.drawerIconSize,
-                progress: animationController),
-            onPressed: onTap);
+            icon: config.isAnimated
+                ? AnimatedIcon(
+                    icon: AnimatedIcons.menu_close,
+                    color: config.drawerIconColor,
+                    size: config.drawerIconSize,
+                    progress: animationController,
+                  )
+                : Icon(
+                    Icons.menu,
+                    color: config.drawerIconColor,
+                    size: config.drawerIconSize,
+                  ),
+            onPressed: onTap,
+          );
   }
 }
 
 class _AnimatedCupertinoIcon extends StatelessWidget {
   final Animation<double> progress;
   final VoidCallback? onTap;
+  final bool isAnimated;
 
-  const _AnimatedCupertinoIcon(
-      {Key? key, required this.progress, required this.onTap})
-      : super(key: key);
+  const _AnimatedCupertinoIcon({
+    Key? key,
+    required this.progress,
+    required this.onTap,
+    required this.isAnimated,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -108,19 +125,25 @@ class _AnimatedCupertinoIcon extends StatelessWidget {
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ValueListenableBuilder<double>(
-          valueListenable: progress,
-          builder: (context, progressValue, child) {
-            final isCompleted = progress.isCompleted;
-            return Icon(
-              isCompleted
-                  ? CupertinoIcons.clear_thick
-                  : CupertinoIcons.line_horizontal_3,
-              color: Colors.grey,
-              size: 25.0,
-            );
-          },
-        ),
+        child: isAnimated
+            ? ValueListenableBuilder<double>(
+                valueListenable: progress,
+                builder: (context, progressValue, child) {
+                  final isCompleted = progress.isCompleted;
+                  return Icon(
+                    isCompleted
+                        ? CupertinoIcons.clear_thick
+                        : CupertinoIcons.line_horizontal_3,
+                    color: Colors.grey,
+                    size: 25.0,
+                  );
+                },
+              )
+            : Icon(
+                CupertinoIcons.line_horizontal_3,
+                color: Colors.grey,
+                size: 25.0,
+              ),
       ),
     );
   }
