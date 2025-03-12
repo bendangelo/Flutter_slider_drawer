@@ -178,30 +178,29 @@ class SliderDrawerState extends State<SliderDrawer>
                 child: child,
               ),
               child: GestureDetector(
-                onHorizontalDragStart: widget.isDraggable
-                    ? (details) => _handleDragStart(details)
-                    : null,
-                onHorizontalDragEnd: widget.isDraggable
-                    ? (details) => _handleDragEnd(details)
-                    : null,
-                onHorizontalDragUpdate: widget.isDraggable
-                    ? (details) => _handleDragUpdate(details, constraints)
-                    : null,
-                child: Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  color: widget.backgroundColor ?? Color(0xFFFFFFFF),
-                  child: Column(
-                    children: [
-                      AppBar(
-                        slideDirection: widget.slideDirection,
-                        animationDrawerController:
-                            _controller.animationController,
-                        appBar: widget.appBar,
-                        onDrawerTap: _controller.toggle,
+                onTap: isDrawerOpen ? closeSlider : null, // Close drawer on tap if open
+                child: AbsorbPointer(
+                  absorbing: isDrawerOpen, // Disable interactions when drawer is open
+                  child: GestureDetector(
+                    onHorizontalDragStart: widget.isDraggable ? _handleDragStart : null,
+                    onHorizontalDragEnd: widget.isDraggable ? _handleDragEnd : null,
+                    onHorizontalDragUpdate: widget.isDraggable ? (details) => _handleDragUpdate(details, constraints) : null,
+                    child: Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      color: widget.backgroundColor ?? const Color(0xFFFFFFFF),
+                      child: Column(
+                        children: [
+                          AppBar(
+                            slideDirection: widget.slideDirection,
+                            animationDrawerController: _controller.animationController,
+                            appBar: widget.appBar,
+                            onDrawerTap: _controller.toggle,
+                          ),
+                          Expanded(child: widget.child),
+                        ],
                       ),
-                      Expanded(child: widget.child),
-                    ],
+                    ),
                   ),
                 ),
               ),
