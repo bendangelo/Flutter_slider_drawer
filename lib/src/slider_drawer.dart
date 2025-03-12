@@ -132,7 +132,7 @@ class SliderDrawerState extends State<SliderDrawer>
       animationDuration: widget.animationDuration,
       slideDirection: widget.slideDirection,
       onDrawerChanged: widget.onDrawerChanged
-    )
+    );
 
     _animation = Tween<double>(
       begin: widget.sliderCloseSize,
