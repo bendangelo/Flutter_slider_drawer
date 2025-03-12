@@ -57,6 +57,11 @@ class SliderDrawer extends StatefulWidget {
   ///
   final bool isDraggable;
 
+  ///[bool] if you set [true] then the app bar and area is wrapped in a SafeArea
+  ///By Default it's false
+  ///
+  final bool useSafeArea;
+
   ///[appBar] if you set [null] then it will not display app bar
   ///
   final Widget? appBar;
@@ -94,7 +99,8 @@ class SliderDrawer extends StatefulWidget {
       this.sliderBoxShadow,
       this.appBar,
       this.backgroundColor,
-      this.onDrawerChanged
+      this.onDrawerChanged,
+      this.useSafeArea = false
       })
       : super(key: key);
 
@@ -189,17 +195,31 @@ class SliderDrawerState extends State<SliderDrawer>
                       width: double.infinity,
                       height: double.infinity,
                       color: widget.backgroundColor ?? const Color(0xFFFFFFFF),
-                      child: Column(
-                        children: [
-                          AppBar(
-                            slideDirection: widget.slideDirection,
-                            animationDrawerController: _controller.animationController,
-                            appBar: widget.appBar,
-                            onDrawerTap: _controller.toggle,
-                          ),
-                          Expanded(child: widget.child),
-                        ],
-                      ),
+                      child: widget.useSafeArea
+                          ? SafeArea(
+                              child: Column(
+                                children: [
+                                  AppBar(
+                                    slideDirection: widget.slideDirection,
+                                    animationDrawerController: _controller.animationController,
+                                    appBar: widget.appBar,
+                                    onDrawerTap: _controller.toggle,
+                                  ),
+                                  Expanded(child: widget.child),
+                                ],
+                              ),
+                            )
+                          : Column(
+                              children: [
+                                AppBar(
+                                  slideDirection: widget.slideDirection,
+                                  animationDrawerController: _controller.animationController,
+                                  appBar: widget.appBar,
+                                  onDrawerTap: _controller.toggle,
+                                ),
+                                Expanded(child: widget.child),
+                              ],
+                            ),
                     ),
                   ),
                 ),
