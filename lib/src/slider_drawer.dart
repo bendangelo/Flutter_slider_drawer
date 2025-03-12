@@ -185,8 +185,6 @@ class SliderDrawerState extends State<SliderDrawer>
                   );
                 },
                 child: GestureDetector(
-                         onTap: isDrawerOpen ? _controller.toggle : null, // Close drawer on tap if open
-                         child: GestureDetector(
                            onHorizontalDragStart: widget.isDraggable ? _handleDragStart : null,
                            onHorizontalDragEnd: widget.isDraggable ? _handleDragEnd : null,
                            onHorizontalDragUpdate: widget.isDraggable
@@ -224,7 +222,6 @@ class SliderDrawerState extends State<SliderDrawer>
                            ),
                            ),
                            ),
-                           )
                                ],
                                );
       },
