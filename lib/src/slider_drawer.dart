@@ -177,23 +177,31 @@ class SliderDrawerState extends State<SliderDrawer>
             AnimatedBuilder(
               animation: _controller.animationController,
               builder: (context, child) {
+                bool isAnimating = _controller.animationController.status == AnimationStatus.forward ||
+                    _controller.animationController.status == AnimationStatus.reverse;
+                bool shouldAbsorb = isDrawerOpen || isAnimating; // Absorb taps if open or animating
+    
                 return Transform.translate(
                   offset: _animationStrategy.getOffset(
                     widget.slideDirection,
                     _animation.value,
                   ),
-                  child: child
+                  child: GestureDetector(
+                    onTap: shouldAbsorb ? closeSlider : null,
+                    behavior: HitTestBehavior.translucent,
+                    child: AbsorbPointer(
+                      absorbing: shouldAbsorb, // Disable interactions only when necessary
+                      child: child,
+                    ),
+                  )
                 );
               },
               child: GestureDetector(
-                onTap: isDrawerOpen ? closeSlider : null,
                 onHorizontalDragStart: widget.isDraggable ? _handleDragStart : null,
                 onHorizontalDragEnd: widget.isDraggable ? _handleDragEnd : null,
                 onHorizontalDragUpdate: widget.isDraggable
                   ? (details) => _handleDragUpdate(details, constraints)
                   : null,
-                child: AbsorbPointer(
-                  absorbing: isDrawerOpen,
                 child: Container(
                   width: double.infinity,
                   height: double.infinity,
@@ -226,7 +234,6 @@ class SliderDrawerState extends State<SliderDrawer>
                 ),
               ),
             ),
-            )
           ],
         );
       },
