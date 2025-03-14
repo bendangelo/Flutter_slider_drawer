@@ -174,57 +174,77 @@ class SliderDrawerState extends State<SliderDrawer>
                 sliderBoxShadow: widget.sliderBoxShadow!,
               ),
 
-              AnimatedBuilder(
-                animation: _controller.animationController,
-                builder: (context, child) {
-                  return Transform.translate(
-                    offset: _animationStrategy.getOffset(
-                      widget.slideDirection,
-                      _animation.value,
+            // Add a transparent overlay that closes the drawer when tapped
+            // This will only be active when the drawer is open
+            AnimatedBuilder(
+              animation: _controller.animationController,
+              builder: (context, _) {
+                return Visibility(
+                  visible: isDrawerOpen,
+                  child: Positioned.fill(
+                    child: GestureDetector(
+                      onTap: closeSlider,
+                      behavior: HitTestBehavior.translucent,
+                      child: Container(
+                        color: Color(0x00000000),
+                      ),
                     ),
-                    child: child
-                  );
-                },
-                child: GestureDetector(
-                           onHorizontalDragStart: widget.isDraggable ? _handleDragStart : null,
-                           onHorizontalDragEnd: widget.isDraggable ? _handleDragEnd : null,
-                           onHorizontalDragUpdate: widget.isDraggable
-                           ? (details) => _handleDragUpdate(details, constraints)
-                           : null,
-                           child: Container(
-                             width: double.infinity,
-                             height: double.infinity,
-                             color: widget.backgroundColor ?? const Color(0xFFFFFFFF),
-                             child: widget.useSafeArea
-                             ? SafeArea(
-                               child: Column(
-                                 children: [
-                                   AppBar(
-                                     slideDirection: widget.slideDirection,
-                                     animationDrawerController: _controller.animationController,
-                                     appBar: widget.appBar,
-                                     onDrawerTap: _controller.toggle,
-                                   ),
-                                   Expanded(child: widget.child),
-                                 ],
-                               ),
-                             )
-                             : Column(
-                               children: [
-                                 AppBar(
-                                   slideDirection: widget.slideDirection,
-                                   animationDrawerController: _controller.animationController,
-                                   appBar: widget.appBar,
-                                   onDrawerTap: _controller.toggle,
-                                 ),
-                                 Expanded(child: widget.child),
-                               ],
-                             ),
-                           ),
-                           ),
-                           ),
-                               ],
-                               );
+                  ),
+                );
+              },
+            ),
+
+            AnimatedBuilder(
+              animation: _controller.animationController,
+              builder: (context, child) {
+                return Transform.translate(
+                  offset: _animationStrategy.getOffset(
+                    widget.slideDirection,
+                    _animation.value,
+                  ),
+                  child: child
+                );
+              },
+              child: GestureDetector(
+                onHorizontalDragStart: widget.isDraggable ? _handleDragStart : null,
+                onHorizontalDragEnd: widget.isDraggable ? _handleDragEnd : null,
+                onHorizontalDragUpdate: widget.isDraggable
+                  ? (details) => _handleDragUpdate(details, constraints)
+                  : null,
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: widget.backgroundColor ?? const Color(0xFFFFFFFF),
+                  child: widget.useSafeArea
+                    ? SafeArea(
+                        child: Column(
+                          children: [
+                            AppBar(
+                              slideDirection: widget.slideDirection,
+                              animationDrawerController: _controller.animationController,
+                              appBar: widget.appBar,
+                              onDrawerTap: _controller.toggle,
+                            ),
+                            Expanded(child: widget.child),
+                          ],
+                        ),
+                      )
+                    : Column(
+                        children: [
+                          AppBar(
+                            slideDirection: widget.slideDirection,
+                            animationDrawerController: _controller.animationController,
+                            appBar: widget.appBar,
+                            onDrawerTap: _controller.toggle,
+                          ),
+                          Expanded(child: widget.child),
+                        ],
+                      ),
+                ),
+              ),
+            ),
+          ],
+        );
       },
     );
   }
@@ -250,4 +270,4 @@ class SliderDrawerState extends State<SliderDrawer>
     _controller.dispose();
     super.dispose();
   }
-    }
+}
