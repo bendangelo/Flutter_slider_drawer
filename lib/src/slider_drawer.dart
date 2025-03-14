@@ -192,7 +192,8 @@ class SliderDrawerState extends State<SliderDrawer>
                 onHorizontalDragUpdate: widget.isDraggable
                   ? (details) => _handleDragUpdate(details, constraints)
                   : null,
-                behavior: isDrawerOpen ? HitTestBehavior.opaque : HitTestBehavior.deferToChild,
+                child: AbsorbPointer(
+                  absorbing: isDrawerOpen,
                 child: Container(
                   width: double.infinity,
                   height: double.infinity,
@@ -225,6 +226,7 @@ class SliderDrawerState extends State<SliderDrawer>
                 ),
               ),
             ),
+            )
           ],
         );
       },
