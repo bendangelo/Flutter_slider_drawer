@@ -174,26 +174,6 @@ class SliderDrawerState extends State<SliderDrawer>
                 sliderBoxShadow: widget.sliderBoxShadow!,
               ),
 
-            // Add a transparent overlay that closes the drawer when tapped
-            // This will only be active when the drawer is open
-            AnimatedBuilder(
-              animation: _controller.animationController,
-              builder: (context, _) {
-                return Visibility(
-                  visible: isDrawerOpen,
-                  child: Positioned.fill(
-                    child: GestureDetector(
-                      onTap: closeSlider,
-                      behavior: HitTestBehavior.translucent,
-                      child: Container(
-                        color: Color(0x00000000),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-
             AnimatedBuilder(
               animation: _controller.animationController,
               builder: (context, child) {
@@ -206,11 +186,13 @@ class SliderDrawerState extends State<SliderDrawer>
                 );
               },
               child: GestureDetector(
+                onTap: isDrawerOpen ? closeSlider : null,
                 onHorizontalDragStart: widget.isDraggable ? _handleDragStart : null,
                 onHorizontalDragEnd: widget.isDraggable ? _handleDragEnd : null,
                 onHorizontalDragUpdate: widget.isDraggable
                   ? (details) => _handleDragUpdate(details, constraints)
                   : null,
+                behavior: isDrawerOpen ? HitTestBehavior.opaque : HitTestBehavior.deferToChild,
                 child: Container(
                   width: double.infinity,
                   height: double.infinity,
