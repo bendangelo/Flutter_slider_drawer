@@ -198,6 +198,7 @@ class SliderDrawerState extends State<SliderDrawer>
                   color: widget.backgroundColor ?? const Color(0xFFFFFFFF),
                   child: widget.useSafeArea
                     ? SafeArea(
+                        bottom: false,
                         child: Column(
                           children: [
                             AppBar(
